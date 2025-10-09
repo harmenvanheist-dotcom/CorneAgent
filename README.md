@@ -58,3 +58,5 @@ npm start
 
 - [ChatKit JavaScript Library](http://openai.github.io/chatkit-js/)
 - [Advanced Self-Hosting Examples](https://github.com/openai/openai-chatkit-advanced-samples)
+
+> **Spec Kit**: Specification-driven development methodology that transforms simple descriptions into structured specs, implementation plans, and executable tasks using AI. Reduces documentation cycles from hours to minutes through immutable architectural principles and structured templates. [Learn more](https://github.com/github/spec-kit/blob/main/spec-driven.md)
