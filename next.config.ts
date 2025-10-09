@@ -7,6 +7,11 @@ const nextConfig: NextConfig = {
     };
     return config;
   },
+  // Suppress some warnings from external dependencies
+  onDemandEntries: {
+    // Extend the maximum inactive period for entries (default: 15s)
+    maxInactiveAge: 25 * 1000,
+  },
 };
 
 export default nextConfig;

@@ -1,11 +1,18 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { ChatKitPanel, type FactAction } from "@/components/ChatKitPanel";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { suppressDeprecationWarnings } from "@/lib/suppress-warnings";
 
 export default function App() {
   const { scheme, setScheme } = useColorScheme();
+
+  // Suppress external deprecation warnings
+  useEffect(() => {
+    const cleanup = suppressDeprecationWarnings();
+    return cleanup;
+  }, []);
 
   const handleWidgetAction = useCallback(async (action: FactAction) => {
     if (process.env.NODE_ENV !== "production") {
