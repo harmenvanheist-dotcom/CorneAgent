@@ -1,6 +1,9 @@
+# Use Netlify's Next.js plugin for optimal deployment
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
 [build]
   command = "npm run build"
-  publish = "out"
 
 [[headers]]
   for = "/*"
@@ -16,8 +19,3 @@
     Access-Control-Allow-Origin = "*"
     Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
     Access-Control-Allow-Headers = "Content-Type, Authorization"
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200

@@ -21,8 +21,8 @@ export default function RootLayout({
         />
         <Script id="suppress-console-errors" strategy="beforeInteractive">
           {`
-            // Suppress known analytics and extension errors in production
-            if (typeof window !== 'undefined' && process.env.NODE_ENV === 'production') {
+            // Suppress known analytics and extension errors
+            if (typeof window !== 'undefined') {
               const originalError = console.error;
               console.error = function(...args) {
                 const message = args.join(' ');
@@ -31,7 +31,8 @@ export default function RootLayout({
                   message.includes('mixpanel.com') ||
                   message.includes('ERR_BLOCKED_BY_CLIENT') ||
                   message.includes('runtime.lastError') ||
-                  message.includes('message port closed')
+                  message.includes('message port closed') ||
+                  message.includes('api-js.mixpanel.com')
                 ) {
                   return;
                 }
