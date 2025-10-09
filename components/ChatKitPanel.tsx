@@ -265,7 +265,7 @@ export function ChatKitPanel({
           shade: theme === "dark" ? -1 : -4,
         },
         accent: {
-          primary: theme === "dark" ? "#f1f5f9" : "#0f172a",
+          primary: "#dc2626", // YouTube red
           level: 1,
         },
       },
@@ -345,25 +345,65 @@ export function ChatKitPanel({
 
   return (
     <div className="relative flex h-[90vh] w-full flex-col overflow-hidden bg-white shadow-sm transition-colors dark:bg-slate-900">
-      <ChatKit
-        key={widgetInstanceKey}
-        control={chatkit.control}
-        className={
-          blockingError || isInitializingSession
-            ? "pointer-events-none opacity-0"
-            : "block h-full w-full"
-        }
-      />
-      <ErrorOverlay
-        error={blockingError}
-        fallbackMessage={
-          blockingError || !isInitializingSession
-            ? null
-            : "Loading assistant session..."
-        }
-        onRetry={blockingError && errors.retryable ? handleResetChat : null}
-        retryLabel="Restart chat"
-      />
+      {/* Header - YouTube style */}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+        <div className="flex items-center space-x-3">
+          <div className="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center">
+            <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          </div>
+          <h1 className="text-xl font-semibold text-gray-900 dark:text-white">ChatKit AI | Eren Kılınç</h1>
+        </div>
+        <div className="flex items-center space-x-2">
+          <div className="px-3 py-1 bg-red-600 text-white text-sm rounded-full">
+            Live
+          </div>
+        </div>
+      </div>
+
+      {/* Main Chat Area */}
+      <div className="flex-1 relative bg-gray-50 dark:bg-gray-800">
+        <ChatKit
+          key={widgetInstanceKey}
+          control={chatkit.control}
+          className={
+            blockingError || isInitializingSession
+              ? "pointer-events-none opacity-0"
+              : "block h-full w-full"
+          }
+        />
+        <ErrorOverlay
+          error={blockingError}
+          fallbackMessage={
+            blockingError || !isInitializingSession
+              ? null
+              : "Loading assistant session..."
+          }
+          onRetry={blockingError && errors.retryable ? handleResetChat : null}
+          retryLabel="Restart chat"
+        />
+      </div>
+
+      {/* Footer - YouTube style */}
+      <div className="px-4 py-3 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <span className="text-sm text-gray-600 dark:text-gray-400">
+              © 2025 Eren Kılınç - Tüm hakları saklıdır
+            </span>
+          </div>
+          <button
+            onClick={() => window.open('https://link.erenkilinc.com', '_blank')}
+            className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition-colors duration-200 flex items-center space-x-2"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+            <span>Tüm bağlantılarım</span>
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
