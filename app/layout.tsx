@@ -19,6 +19,27 @@ export default function RootLayout({
           src="https://cdn.platform.openai.com/deployments/chatkit/chatkit.js"
           strategy="beforeInteractive"
         />
+        <Script id="suppress-console-errors" strategy="beforeInteractive">
+          {`
+            // Suppress known analytics and extension errors in production
+            if (typeof window !== 'undefined' && process.env.NODE_ENV === 'production') {
+              const originalError = console.error;
+              console.error = function(...args) {
+                const message = args.join(' ');
+                // Skip Mixpanel and extension-related errors
+                if (
+                  message.includes('mixpanel.com') ||
+                  message.includes('ERR_BLOCKED_BY_CLIENT') ||
+                  message.includes('runtime.lastError') ||
+                  message.includes('message port closed')
+                ) {
+                  return;
+                }
+                originalError.apply(console, args);
+              };
+            }
+          `}
+        </Script>
       </head>
       <body className="antialiased">{children}</body>
     </html>
