@@ -1,60 +1,76 @@
-# ChatKit Starter Template
+# ChatKit AI Asistanı - Eren Kılınç
 
-This repository is the simplest way to bootstrap a [ChatKit](http://openai.github.io/chatkit-js/) application. It ships with a minimal Next.js UI, the ChatKit web component, and a ready-to-use session endpoint so you can experiment with OpenAI-hosted workflows built using [Agent Builder](https://platform.openai.com/agent-builder).
+Bu proje, [ChatKit](http://openai.github.io/chatkit-js/) tabanlı bir AI asistan uygulamasıdır. **Eren Kılınç YouTube videoları** için özel olarak eğitilmiş bir AI asistanı içerir ve YouTube temasında tasarlanmıştır. Minimal Next.js arayüzü, ChatKit web bileşeni ve kullanıma hazır oturum endpoint'i ile birlikte gelir.
 
-## What You Get
+Bu asistan, Eren Kılınç'ın YouTube içerikleri hakkında sorular yanıtlayabilir ve video konuları hakkında bilgi verebilir.
 
-- Next.js app with `<openai-chatkit>` web component and theming controls
-- API endpoint for creating a session at [`app/api/create-session/route.ts`](app/api/create-session/route.ts)
-- Quick examples for starter prompts, placeholder text, and greeting message
+## Bu Projede Neler Var
 
-## Getting Started
+- YouTube temalı Next.js uygulaması ve `<openai-chatkit>` web bileşeni
+- [`app/api/create-session/route.ts`](app/api/create-session/route.ts) dosyasında oturum oluşturma API endpoint'i
+- Eren Kılınç YouTube videoları için özel eğitilmiş AI asistanı
+- Başlangıç komutları, yer tutucu metinler ve karşılama mesajı örnekleri
 
-Follow every step below to run the app locally and configure it for your preferred backend.
+## Başlangıç
 
-### 1. Install dependencies
+Uygulamayı yerel olarak çalıştırmak ve tercih ettiğiniz backend için yapılandırmak üzere aşağıdaki adımları takip edin.
+
+### 1. Bağımlılıkları yükleyin
 
 ```bash
 npm install
 ```
 
-### 2. Create your environment file
+### 2. Ortam değişkenleri dosyasını oluşturun
 
-Copy the example file and fill in the required values:
+Örnek dosyayı kopyalayın ve gerekli değerleri doldurun:
 
 ```bash
 cp .env.example .env.local
 ```
 
-### 3. Configure ChatKit credentials
+### 3. ChatKit kimlik bilgilerini yapılandırın
 
-Update `.env.local` with the variables that match your setup.
+`.env.local` dosyasını kurulumunuza uygun değişkenlerle güncelleyin.
 
-- `OPENAI_API_KEY` — API key created **within the same org & project as your Agent Builder**
-- `NEXT_PUBLIC_CHATKIT_WORKFLOW_ID` — the workflow you created in [Agent Builder](https://platform.openai.com/agent-builder)
-- (optional) `CHATKIT_API_BASE` - customizable base URL for the ChatKit API endpoint
+- `OPENAI_API_KEY` — **Agent Builder ile aynı organizasyon ve proje içinde** oluşturulan API anahtarı
+- `NEXT_PUBLIC_CHATKIT_WORKFLOW_ID` — [Agent Builder](https://platform.openai.com/agent-builder)'da oluşturduğunuz workflow
+- (opsiyonel) `CHATKIT_API_BASE` - ChatKit API endpoint'i için özelleştirilebilir temel URL
 
-### 4. Run the app
+### 4. Uygulamayı çalıştırın
 
 ```bash
 npm run dev
 ```
 
-Visit `http://localhost:3000` and start chatting. Use the prompts on the start screen to verify your workflow connection, then customize the UI or prompt list in [`lib/config.ts`](lib/config.ts) and [`components/ChatKitPanel.tsx`](components/ChatKitPanel.tsx).
+`http://localhost:3000` adresini ziyaret edin ve sohbete başlayın. Workflow bağlantınızı doğrulamak için başlangıç ekranındaki komutları kullanın, ardından [`lib/config.ts`](lib/config.ts) ve [`components/ChatKitPanel.tsx`](components/ChatKitPanel.tsx) dosyalarında UI veya komut listesini özelleştirin.
 
-### 5. Build for production (optional)
+### 5. Prodüksiyon için derleyin (opsiyonel)
 
 ```bash
 npm run build
 npm start
 ```
 
-## Customization Tips
+## Özelleştirme İpuçları
 
-- Adjust starter prompts, greeting text, and placeholder copy in [`lib/config.ts`](lib/config.ts).
-- Update the theme defaults or event handlers inside [`components/.tsx`](components/ChatKitPanel.tsx) to integrate with your product analytics or storage.
+- [`lib/config.ts`](lib/config.ts) dosyasında başlangıç komutlarını, karşılama metnini ve yer tutucu metinleri ayarlayın.
+- [`components/ChatKitPanel.tsx`](components/ChatKitPanel.tsx) içindeki tema varsayılanlarını veya olay işleyicilerini güncelleyerek ürün analitiğiniz veya depolamanızla entegre edin.
+- [`components/ChatKitPanel-default.tsx`] dosyasını düzenleyerek orijinal dosyaya müdahale edebilirsiniz.
 
-## References
+## Özel Özellikler
 
-- [ChatKit JavaScript Library](http://openai.github.io/chatkit-js/)
-- [Advanced Self-Hosting Examples](https://github.com/openai/openai-chatkit-advanced-samples)
+- **YouTube Temalı Tasarım**: Kırmızı renk şeması ve YouTube'a benzer arayüz
+- **Eren Kılınç Branding**: Alt kısımda telif hakkı ve kişisel web sitesi linki
+- **Eren Kılınç YouTube Videoları İçin Eğitilmiş AI**: Asistan, Eren Kılınç'ın YouTube içerikleri hakkında özel bilgiye sahiptir
+
+## Geliştirici
+
+**Eren Kılınç**  
+- Website: [link.erenkilinc.com](https://link.erenkilinc.com)
+- © 2025 Tüm hakları saklıdır
+
+## Referanslar
+
+- [ChatKit JavaScript Kütüphanesi](http://openai.github.io/chatkit-js/)
+- [Gelişmiş Self-Hosting Örnekleri](https://github.com/openai/openai-chatkit-advanced-samples)
