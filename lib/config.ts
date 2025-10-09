@@ -6,12 +6,12 @@ export const CREATE_SESSION_ENDPOINT = "/api/create-session";
 
 export const STARTER_PROMPTS: StartScreenPrompt[] = [
   {
-    label: "What can you do?",
-    prompt: "What can you do?",
+    label: "O que você pode fazer?",
+    prompt: "Como posso ajudar?",
     icon: "circle-question",
   },
 ];
 
-export const PLACEHOLDER_INPUT = "Ask anything...";
+export const PLACEHOLDER_INPUT = "Pergunte sobre nossos dados...";
 
-export const GREETING = "How can I help you today?";
+export const GREETING = "Seu Assistente da PH3A. Como posso ajudá-lo hoje?";
