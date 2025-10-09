@@ -56,7 +56,6 @@ npm start
 
 - [`lib/config.ts`](lib/config.ts) dosyasında başlangıç komutlarını, karşılama metnini ve yer tutucu metinleri ayarlayın.
 - [`components/ChatKitPanel.tsx`](components/ChatKitPanel.tsx) içindeki tema varsayılanlarını veya olay işleyicilerini güncelleyerek ürün analitiğiniz veya depolamanızla entegre edin.
-- [`components/ChatKitPanel-default.tsx`] dosyasını düzenleyerek orijinal dosyaya müdahale edebilirsiniz.
 
 ## Özel Özellikler
 
