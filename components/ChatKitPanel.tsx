@@ -451,6 +451,17 @@ export function ChatKitPanel({
     },
   });
 
+  // Log state changes
+  useEffect(() => {
+    console.info("[ChatKitPanel] State changed:", {
+      isInitializingSession,
+      hasControl: Boolean(chatkit.control),
+      scriptStatus,
+      hasError: Boolean(errors.session ?? errors.integration ?? errors.script),
+      widgetInstanceKey,
+    });
+  }, [isInitializingSession, chatkit.control, scriptStatus, errors, widgetInstanceKey]);
+
   const activeError = errors.session ?? errors.integration;
   const blockingError = errors.script ?? activeError;
 
