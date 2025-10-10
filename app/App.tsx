@@ -38,7 +38,10 @@ export default function App() {
             className="absolute inset-0 bg-black/40"
             onClick={() => setIsOpen(false)}
           />
-          <div className="relative z-10 h-[80vh] w-full max-w-3xl overflow-hidden rounded-xl border border-slate-200 bg-white shadow-2xl dark:border-slate-800 dark:bg-slate-900">
+          <div
+            className="relative z-10 h-[80vh] w-full max-w-3xl overflow-hidden rounded-xl border border-slate-200 bg-white shadow-2xl dark:border-slate-800 dark:bg-slate-900"
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
               type="button"
               aria-label="Close"

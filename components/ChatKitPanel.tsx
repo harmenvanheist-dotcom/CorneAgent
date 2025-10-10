@@ -457,7 +457,7 @@ export function ChatKitPanel({
             ? null
             : "Loading assistant session..."
         }
-        onRetry={blockingError && errors.retryable ? handleResetChat : null}
+        onRetry={handleResetChat}
         retryLabel="Restart chat"
       />
     </div>
