@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FYI Assistant — Chat Pop-up Test</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; margin: 0; background:#f8fafc; color:#1e293b; display:flex; justify-content:center; align-items:flex-start; min-height:100vh; padding:40px; }
+    .card { background:#fff; border-radius:12px; box-shadow:0 4px 20px rgba(0,0,0,.08); padding:24px; width:min(520px,100%); }
+    h1 { margin:0 0 10px; font-size:1.4rem; font-weight:700; }
+    label { display:block; font-size:.9rem; color:#475569; margin:.5rem 0 .25rem; }
+    input { width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:8px; font-size:1rem; }
+    .row { display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; }
+    button { background:#2563eb; color:#fff; border:none; border-radius:8px; padding:12px 16px; font-weight:600; cursor:pointer; }
+    button:hover { background:#1d4ed8; }
+    .muted { color:#64748b; font-size:.9rem; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>FYI Assistant — Chat Pop-up Test</h1>
+    <p class="muted">Click the button to open a compact chat window. Adjust fields to test parameters.</p>
+
+    <label for="first">First name</label>
+    <input id="first" value="Toni" />
+
+    <label for="last">Last name</label>
+    <input id="last" value="Wenceslao" />
+
+    <label for="email">Email</label>
+    <input id="email" value="toni@fyi.app" />
+
+    <label for="fyi_url">FYI URL</label>
+    <input id="fyi_url" value="https://go.fyi.app/tasks" />
+
+    <div class="row">
+      <button id="open-chat">Open Support Chat (pop-up)</button>
+      <button id="open-tab"  type="button" style="background:#111827">Open in New Tab</button>
+    </div>
+  </div>
+
+  <script>
+    const BASE = "https://fyi-assistant.zapier.app/";
+
+    function buildChatUrl() {
+      const first = encodeURIComponent(document.getElementById("first").value.trim());
+      const last  = encodeURIComponent(document.getElementById("last").value.trim());
+      const email = encodeURIComponent(document.getElementById("email").value.trim());
+      const fyi   = encodeURIComponent(document.getElementById("fyi_url").value.trim());
+      return `${BASE}?fyi_url=${fyi}&user_email=${email}&first_name=${first}&last_name=${last}`;
+    }
+
+    // Open a centred pop-up window sized like a chat pane
+    function openChatPopup(url, w = 420, h = 680) {
+      // Calculate centre position on the current screen
+      const dualScreenLeft = window.screenLeft !== undefined ? window.screenLeft : window.screenX;
+      const dualScreenTop  = window.screenTop  !== undefined ? window.screenTop  : window.screenY;
+      const width  = window.innerWidth  || document.documentElement.clientWidth  || screen.width;
+      const height = window.innerHeight || document.documentElement.clientHeight || screen.height;
+      const left = Math.max(0, dualScreenLeft + (width  - w) / 2);
+      const top  = Math.max(0, dualScreenTop  + (height - h) / 2);
+
+      // Features: tidy, resizable, scrollbars; no toolbars
+      const features = [
+        `width=${w}`, `height=${h}`,
+        `left=${Math.floor(left)}`, `top=${Math.floor(top)}`,
+        "resizable=yes", "scrollbars=yes",
+        "toolbar=no", "menubar=no", "location=no", "status=no"
+      ].join(",");
+
+      const win = window.open(url, "fyi_assistant_chat", features);
+      // Fallback if blocked by a pop-up blocker
+      if (!win || win.closed || typeof win.closed === "undefined") {
+        window.open(url, "_blank", "noopener,noreferrer");
+      } else {
+        try { win.opener = null; } catch(_) {}
+        win.focus();
+      }
+    }
+
+    document.getElementById("open-chat").addEventListener("click", () => {
+      const url = buildChatUrl();
+      openChatPopup(url, 420, 680); // tweak dimensions here if you like
+    });
+
+    document.getElementById("open-tab").addEventListener("click", () => {
+      const url = buildChatUrl();
+      window.open(url, "_blank", "noopener,noreferrer");
+    });
+  </script>
+</body>
+</html>

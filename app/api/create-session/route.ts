@@ -1,6 +1,6 @@
 import { WORKFLOW_ID } from "@/lib/config";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 
 interface CreateSessionRequestBody {
   workflow?: { id?: string | null } | null;
@@ -36,9 +36,17 @@ export async function POST(request: Request): Promise<Response> {
       parsedBody?.workflow?.id ?? parsedBody?.workflowId ?? WORKFLOW_ID;
 
     if (process.env.NODE_ENV !== "production") {
+      const keyType = openaiApiKey.startsWith("sk-proj-") ? "project" : "org/global";
+      const keyPrefix = `${openaiApiKey.slice(0, 7)}...`;
       console.info("[create-session] handling request", {
         resolvedWorkflowId,
         body: JSON.stringify(parsedBody),
+        hasOrgId: !!process.env.OPENAI_ORG_ID,
+        orgId: process.env.OPENAI_ORG_ID || "(not set)",
+        hasProjectId: !!process.env.OPENAI_PROJECT_ID,
+        projectId: process.env.OPENAI_PROJECT_ID || "(not set)",
+        keyType,
+        keyPrefix,
       });
     }
 
@@ -53,15 +61,32 @@ export async function POST(request: Request): Promise<Response> {
 
     const apiBase = process.env.CHATKIT_API_BASE ?? DEFAULT_CHATKIT_BASE;
     const url = `${apiBase}/v1/chatkit/sessions`;
+    
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${openaiApiKey}`,
+      "OpenAI-Beta": "chatkit_beta=v1",
+    };
+    
+    // Add organization ID if provided
+    const orgId = process.env.OPENAI_ORG_ID;
+    if (orgId) {
+      headers["OpenAI-Organization"] = orgId;
+    }
+    
+    // Add project ID if provided (for project-scoped workflows)
+    const projectId = process.env.OPENAI_PROJECT_ID;
+    if (projectId) {
+      headers["OpenAI-Project"] = projectId;
+    }
+    
     const upstreamResponse = await fetch(url, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${openaiApiKey}`,
-        "OpenAI-Beta": "chatkit_beta=v1",
-      },
+      headers,
       body: JSON.stringify({
-        workflow: { id: resolvedWorkflowId },
+        workflow: { 
+          id: resolvedWorkflowId
+        },
         user: userId,
       }),
     });
