@@ -1,6 +1,10 @@
 export async function GET() {
   // Allow debugging in production for troubleshooting
 
+  // Get all environment variables for debugging
+  const allEnvVars = Object.keys(process.env);
+  const openaiEnvVars = allEnvVars.filter(key => key.includes('OPENAI') || key.includes('CHATKIT'));
+  
   const envStatus = {
     hasOpenaiApiKey: !!process.env.OPENAI_API_KEY,
     hasWorkflowId: !!process.env.NEXT_PUBLIC_CHATKIT_WORKFLOW_ID,
@@ -12,9 +16,12 @@ export async function GET() {
     workflowId: process.env.NEXT_PUBLIC_CHATKIT_WORKFLOW_ID ? 'SET' : 'MISSING',
     orgId: process.env.OPENAI_ORG_ID ? 'SET' : 'MISSING',
     projectId: process.env.OPENAI_PROJECT_ID ? 'SET' : 'MISSING',
-    // Additional debugging info
-    allEnvKeys: Object.keys(process.env).filter(key => key.includes('OPENAI') || key.includes('CHATKIT')).sort(),
-    note: "If secrets are missing, they might be in Secret Management instead of Environment Variables"
+    // Enhanced debugging info
+    allEnvKeys: openaiEnvVars.sort(),
+    totalEnvKeys: allEnvVars.length,
+    awsEnvKeys: allEnvVars.filter(key => key.startsWith('AWS_')).slice(0, 5), // Show first 5 AWS vars
+    amplifyEnvKeys: allEnvVars.filter(key => key.startsWith('AMPLIFY_')).slice(0, 5), // Show first 5 Amplify vars
+    note: "Debugging environment variable loading issue"
   };
 
   return new Response(JSON.stringify(envStatus, null, 2), {
