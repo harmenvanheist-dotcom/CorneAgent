@@ -49,6 +49,22 @@ npm run build
 npm start
 ```
 
+## Deploy to AWS 🚀
+
+Ready to deploy? We've got you covered!
+
+- 🚀 **[Quick Start Guide](QUICK_START.md)** - Deploy in 10 minutes (recommended)
+- 📖 **[Full Deployment Guide](AWS_DEPLOYMENT_GUIDE.md)** - Detailed AWS Amplify setup
+- ✅ **[Deployment Checklist](DEPLOYMENT_CHECKLIST.md)** - Step-by-step checklist
+
+### Easy Setup (Windows)
+
+Run the PowerShell setup script to create your `.env.local` file:
+
+```powershell
+.\setup-env.ps1
+```
+
 ## Customization Tips
 
 - Adjust starter prompts, greeting text, and placeholder copy in [`lib/config.ts`](lib/config.ts).
@@ -58,3 +74,4 @@ npm start
 
 - [ChatKit JavaScript Library](http://openai.github.io/chatkit-js/)
 - [Advanced Self-Hosting Examples](https://github.com/openai/openai-chatkit-advanced-samples)
+- [AWS Amplify Documentation](https://docs.amplify.aws/)
