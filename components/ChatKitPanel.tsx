@@ -53,6 +53,7 @@ export function ChatKitPanel({
   const [isInitializingSession, setIsInitializingSession] = useState(true);
   const isMountedRef = useRef(true);
   const isInitializingRef = useRef(false); // Track if initialization is in progress
+  const lastSessionCreatedRef = useRef<number>(0); // Track last session creation time
   const [scriptStatus, setScriptStatus] = useState<
     "pending" | "ready" | "error"
   >(() =>
@@ -148,6 +149,7 @@ export function ChatKitPanel({
   const handleResetChat = useCallback(() => {
     processedFacts.current.clear();
     isInitializingRef.current = false; // Reset initialization flag on reset
+    lastSessionCreatedRef.current = 0; // Reset cooldown timer
     if (isBrowser) {
       setScriptStatus(
         window.customElements?.get("openai-chatkit") ? "ready" : "pending"
@@ -167,6 +169,18 @@ export function ChatKitPanel({
         isProduction: process.env.NODE_ENV === "production",
         isCurrentlyInitializing: isInitializingRef.current
       });
+
+      // Prevent rapid successive session creation calls (cooldown: 2 seconds)
+      const now = Date.now();
+      const timeSinceLastSession = now - lastSessionCreatedRef.current;
+      if (!currentSecret && timeSinceLastSession < 2000 && lastSessionCreatedRef.current > 0) {
+        console.warn("[ChatKitPanel] Cooldown period active, skipping session creation", {
+          timeSinceLastMs: timeSinceLastSession,
+          cooldownMs: 2000
+        });
+        // Wait for cooldown to expire
+        await new Promise(resolve => setTimeout(resolve, 2000 - timeSinceLastSession));
+      }
 
       // Prevent concurrent initialization calls - wait for existing init to complete
       if (!currentSecret && isInitializingRef.current) {
@@ -248,6 +262,8 @@ export function ChatKitPanel({
           setErrorState({ session: null, integration: null });
         }
 
+        // Update last session creation time
+        lastSessionCreatedRef.current = Date.now();
         console.info("[ChatKitPanel] Session created successfully, returning client secret");
         return clientSecret;
       } catch (error) {
