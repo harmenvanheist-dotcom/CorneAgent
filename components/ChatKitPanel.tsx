@@ -183,8 +183,18 @@ export function ChatKitPanel({
       // Prevent rapid successive session creation calls (cooldown: 2 seconds)
       const now = Date.now();
       const timeSinceLastSession = now - lastSessionCreatedRef.current;
+      console.info("[ChatKitPanel] Cooldown check", {
+        now,
+        lastTimestamp: lastSessionCreatedRef.current,
+        timeSinceLastMs: timeSinceLastSession,
+        cooldownActive: timeSinceLastSession < 2000,
+        timestampExists: lastSessionCreatedRef.current > 0,
+        isNewSession: !currentSecret,
+        willBlock: !currentSecret && timeSinceLastSession < 2000 && lastSessionCreatedRef.current > 0
+      });
+      
       if (!currentSecret && timeSinceLastSession < 2000 && lastSessionCreatedRef.current > 0) {
-        console.warn("[ChatKitPanel] Cooldown period active, blocking duplicate session creation", {
+        console.warn("[ChatKitPanel] ⚠️ COOLDOWN ACTIVE - Blocking duplicate session creation", {
           timeSinceLastMs: timeSinceLastSession,
           cooldownMs: 2000
         });
