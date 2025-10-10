@@ -168,11 +168,16 @@ export function ChatKitPanel({
         isCurrentlyInitializing: isInitializingRef.current
       });
 
-      // Prevent concurrent initialization calls
+      // Prevent concurrent initialization calls - wait for existing init to complete
       if (!currentSecret && isInitializingRef.current) {
-        console.warn("[ChatKitPanel] Skipping concurrent initialization call");
-        // Return a promise that will never resolve to prevent duplicate calls
-        return new Promise(() => {});
+        console.warn("[ChatKitPanel] Concurrent initialization detected, waiting...");
+        // Wait for the existing initialization to complete
+        let attempts = 0;
+        while (isInitializingRef.current && attempts < 50) {
+          await new Promise(resolve => setTimeout(resolve, 100));
+          attempts++;
+        }
+        console.info("[ChatKitPanel] Wait complete, proceeding with initialization");
       }
 
       if (!isWorkflowConfigured) {
