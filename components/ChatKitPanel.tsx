@@ -460,6 +460,26 @@ export function ChatKitPanel({
       hasError: Boolean(errors.session ?? errors.integration ?? errors.script),
       widgetInstanceKey,
     });
+    
+    // Check if ChatKit element is actually rendered and has content
+    if (isBrowser && !isInitializingSession && chatkit.control) {
+      setTimeout(() => {
+        const chatkitElement = document.querySelector('openai-chatkit');
+        if (chatkitElement) {
+          const shadowRoot = (chatkitElement as any).shadowRoot;
+          console.info("[ChatKitPanel] ChatKit element check:", {
+            elementExists: true,
+            hasShadowRoot: Boolean(shadowRoot),
+            shadowRootChildren: shadowRoot?.childElementCount || 0,
+            elementDisplay: window.getComputedStyle(chatkitElement).display,
+            elementVisibility: window.getComputedStyle(chatkitElement).visibility,
+            elementOpacity: window.getComputedStyle(chatkitElement).opacity,
+          });
+        } else {
+          console.warn("[ChatKitPanel] ChatKit element not found in DOM!");
+        }
+      }, 500);
+    }
   }, [isInitializingSession, chatkit.control, scriptStatus, errors, widgetInstanceKey]);
 
   const activeError = errors.session ?? errors.integration;
