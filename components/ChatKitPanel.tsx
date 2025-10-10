@@ -176,10 +176,26 @@ export function ChatKitPanel({
         secretExpired: Date.now() > secretExpiresRef.current
       });
 
-      // If we have a cached secret that hasn't expired, return it immediately
+      // If we have a cached secret in-memory that hasn't expired, return it immediately
       if (!currentSecret && cachedSecretRef.current && Date.now() < secretExpiresRef.current) {
         console.info("[ChatKitPanel] ✅ Returning cached secret (valid for another", Math.floor((secretExpiresRef.current - Date.now()) / 1000), "seconds)");
         return cachedSecretRef.current;
+      }
+
+      // Check browser localStorage cache as a fallback (persists across re-mounts)
+      if (isBrowser && !currentSecret) {
+        try {
+          const lsSecret = window.localStorage.getItem("chatkit_client_secret");
+          const lsExpires = Number(window.localStorage.getItem("chatkit_client_secret_expires"));
+          if (lsSecret && Number.isFinite(lsExpires) && Date.now() < lsExpires) {
+            cachedSecretRef.current = lsSecret;
+            secretExpiresRef.current = lsExpires;
+            console.info("[ChatKitPanel] ✅ Returning localStorage cached secret (valid for", Math.floor((lsExpires - Date.now()) / 1000), "seconds)");
+            return lsSecret;
+          }
+        } catch (e) {
+          console.warn("[ChatKitPanel] localStorage unavailable", e);
+        }
       }
 
       if (!isWorkflowConfigured) {
@@ -290,6 +306,14 @@ export function ChatKitPanel({
           secretExpiresRef.current = Date.now() + (5 * 60 * 1000); // 5 minutes default
         }
         cachedSecretRef.current = clientSecret;
+
+        // Persist to localStorage for robustness against re-mounts/re-inits
+        if (isBrowser) {
+          try {
+            window.localStorage.setItem("chatkit_client_secret", clientSecret);
+            window.localStorage.setItem("chatkit_client_secret_expires", String(secretExpiresRef.current));
+          } catch {}
+        }
 
         if (isMountedRef.current) {
           setErrorState({ session: null, integration: null });
