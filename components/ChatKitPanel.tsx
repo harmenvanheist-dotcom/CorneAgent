@@ -56,6 +56,7 @@ export function ChatKitPanel({
   const lastSessionCreatedRef = useRef<number>(0); // Track last session creation time
   const cachedSecretRef = useRef<string | null>(null); // Cache the client secret
   const secretExpiresRef = useRef<number>(0); // Track when secret expires
+  const hasActiveSessionRef = useRef<boolean>(false); // Tracks if a usable session exists
   const [scriptStatus, setScriptStatus] = useState<
     "pending" | "ready" | "error"
   >(() =>
@@ -188,6 +189,7 @@ export function ChatKitPanel({
           setIsInitializingSession(false);
           setErrorState({ session: null, integration: null });
         }
+        hasActiveSessionRef.current = true;
         return cachedSecretRef.current;
       }
 
@@ -209,6 +211,7 @@ export function ChatKitPanel({
               setIsInitializingSession(false);
               setErrorState({ session: null, integration: null });
             }
+            hasActiveSessionRef.current = true;
             return lsSecret;
           }
         } catch (e) {
@@ -263,10 +266,16 @@ export function ChatKitPanel({
 
       if (isMountedRef.current) {
         if (!currentSecret) {
-          isInitializingRef.current = true; // Mark initialization as in progress
-          lastSessionCreatedRef.current = Date.now(); // Set timestamp immediately
-          setIsInitializingSession(true);
-          console.info("[ChatKitPanel] Setting isInitializingSession to true and timestamp");
+          if (!hasActiveSessionRef.current) {
+            isInitializingRef.current = true; // Mark initialization as in progress
+            lastSessionCreatedRef.current = Date.now(); // Set timestamp immediately
+            setIsInitializingSession(true);
+            console.info("[ChatKitPanel] Setting isInitializingSession to true and timestamp");
+          } else {
+            // We already have a valid session; keep UI unblocked
+            isInitializingRef.current = false;
+            setIsInitializingSession(false);
+          }
         }
         setErrorState({ session: null, integration: null, retryable: false });
       }
@@ -324,6 +333,7 @@ export function ChatKitPanel({
           secretExpiresRef.current = Date.now() + (5 * 60 * 1000); // 5 minutes default
         }
         cachedSecretRef.current = clientSecret;
+        hasActiveSessionRef.current = true;
 
         // Persist to localStorage for robustness against re-mounts/re-inits
         if (isBrowser) {
