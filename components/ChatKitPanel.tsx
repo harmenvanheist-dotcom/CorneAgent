@@ -170,16 +170,27 @@ export function ChatKitPanel({
         isCurrentlyInitializing: isInitializingRef.current
       });
 
+      if (!isWorkflowConfigured) {
+        const detail =
+          "Set NEXT_PUBLIC_CHATKIT_WORKFLOW_ID in your .env.local file.";
+        if (isMountedRef.current) {
+          setErrorState({ session: detail, retryable: false });
+          setIsInitializingSession(false);
+        }
+        throw new Error(detail);
+      }
+
       // Prevent rapid successive session creation calls (cooldown: 2 seconds)
       const now = Date.now();
       const timeSinceLastSession = now - lastSessionCreatedRef.current;
       if (!currentSecret && timeSinceLastSession < 2000 && lastSessionCreatedRef.current > 0) {
-        console.warn("[ChatKitPanel] Cooldown period active, skipping session creation", {
+        console.warn("[ChatKitPanel] Cooldown period active, blocking duplicate session creation", {
           timeSinceLastMs: timeSinceLastSession,
           cooldownMs: 2000
         });
         // Wait for cooldown to expire
-        await new Promise(resolve => setTimeout(resolve, 2000 - timeSinceLastSession));
+        await new Promise(resolve => setTimeout(resolve, 2000 - timeSinceLastSession + 100));
+        console.info("[ChatKitPanel] Cooldown expired, proceeding");
       }
 
       // Prevent concurrent initialization calls - wait for existing init to complete
@@ -194,21 +205,12 @@ export function ChatKitPanel({
         console.info("[ChatKitPanel] Wait complete, proceeding with initialization");
       }
 
-      if (!isWorkflowConfigured) {
-        const detail =
-          "Set NEXT_PUBLIC_CHATKIT_WORKFLOW_ID in your .env.local file.";
-        if (isMountedRef.current) {
-          setErrorState({ session: detail, retryable: false });
-          setIsInitializingSession(false);
-        }
-        throw new Error(detail);
-      }
-
       if (isMountedRef.current) {
         if (!currentSecret) {
           isInitializingRef.current = true; // Mark initialization as in progress
+          lastSessionCreatedRef.current = Date.now(); // Set timestamp immediately
           setIsInitializingSession(true);
-          console.info("[ChatKitPanel] Setting isInitializingSession to true");
+          console.info("[ChatKitPanel] Setting isInitializingSession to true and timestamp");
         }
         setErrorState({ session: null, integration: null, retryable: false });
       }
@@ -262,8 +264,6 @@ export function ChatKitPanel({
           setErrorState({ session: null, integration: null });
         }
 
-        // Update last session creation time
-        lastSessionCreatedRef.current = Date.now();
         console.info("[ChatKitPanel] Session created successfully, returning client secret");
         return clientSecret;
       } catch (error) {
