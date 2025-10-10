@@ -345,6 +345,17 @@ export function ChatKitPanel({
 
   return (
     <div className="relative flex h-[90vh] w-full flex-col overflow-hidden bg-white shadow-sm transition-colors dark:bg-slate-900">
+      {/* Temporary production debug info */}
+      {process.env.NODE_ENV === "production" && (blockingError || isInitializingSession) && (
+        <div className="absolute top-0 left-0 right-0 z-50 bg-yellow-100 p-4 text-sm">
+          <strong>Debug Info:</strong><br/>
+          isInitializingSession: {String(isInitializingSession)}<br/>
+          blockingError: {blockingError || "none"}<br/>
+          hasControl: {String(Boolean(chatkit.control))}<br/>
+          scriptStatus: {scriptStatus}<br/>
+          workflowId: {WORKFLOW_ID ? "SET" : "MISSING"}
+        </div>
+      )}
       <ChatKit
         key={widgetInstanceKey}
         control={chatkit.control}
