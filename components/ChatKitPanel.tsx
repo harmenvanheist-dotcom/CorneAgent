@@ -52,6 +52,7 @@ export function ChatKitPanel({
   const [errors, setErrors] = useState<ErrorState>(() => createInitialErrors());
   const [isInitializingSession, setIsInitializingSession] = useState(true);
   const isMountedRef = useRef(true);
+  const isInitializingRef = useRef(false); // Track if initialization is in progress
   const [scriptStatus, setScriptStatus] = useState<
     "pending" | "ready" | "error"
   >(() =>
@@ -146,6 +147,7 @@ export function ChatKitPanel({
 
   const handleResetChat = useCallback(() => {
     processedFacts.current.clear();
+    isInitializingRef.current = false; // Reset initialization flag on reset
     if (isBrowser) {
       setScriptStatus(
         window.customElements?.get("openai-chatkit") ? "ready" : "pending"
@@ -162,8 +164,16 @@ export function ChatKitPanel({
         currentSecretPresent: Boolean(currentSecret),
         workflowId: WORKFLOW_ID,
         endpoint: CREATE_SESSION_ENDPOINT,
-        isProduction: process.env.NODE_ENV === "production"
+        isProduction: process.env.NODE_ENV === "production",
+        isCurrentlyInitializing: isInitializingRef.current
       });
+
+      // Prevent concurrent initialization calls
+      if (!currentSecret && isInitializingRef.current) {
+        console.warn("[ChatKitPanel] Skipping concurrent initialization call");
+        // Return a promise that will never resolve to prevent duplicate calls
+        return new Promise(() => {});
+      }
 
       if (!isWorkflowConfigured) {
         const detail =
@@ -177,6 +187,7 @@ export function ChatKitPanel({
 
       if (isMountedRef.current) {
         if (!currentSecret) {
+          isInitializingRef.current = true; // Mark initialization as in progress
           setIsInitializingSession(true);
           console.info("[ChatKitPanel] Setting isInitializingSession to true");
         }
@@ -251,8 +262,9 @@ export function ChatKitPanel({
           willSetInitFalse: isMountedRef.current && !currentSecret
         });
         if (isMountedRef.current && !currentSecret) {
+          isInitializingRef.current = false; // Reset initialization flag
           setIsInitializingSession(false);
-          console.info("[ChatKitPanel] Set isInitializingSession to false");
+          console.info("[ChatKitPanel] Set isInitializingSession to false and reset init flag");
         }
       }
     },
