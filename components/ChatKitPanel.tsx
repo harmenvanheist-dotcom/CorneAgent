@@ -423,11 +423,7 @@ export function ChatKitPanel({
       <ChatKit
         key={widgetInstanceKey}
         control={chatkit.control}
-        className={
-          blockingError || isInitializingSession
-            ? "pointer-events-none opacity-0"
-            : "block h-full w-full"
-        }
+        className={"block h-full w-full"}
         style={{ paddingTop: process.env.NODE_ENV === "production" ? "2.5rem" : undefined }}
       />
       <ErrorOverlay
