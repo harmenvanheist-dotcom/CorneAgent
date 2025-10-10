@@ -158,13 +158,12 @@ export function ChatKitPanel({
 
   const getClientSecret = useCallback(
     async (currentSecret: string | null) => {
-      if (isDev) {
-        console.info("[ChatKitPanel] getClientSecret invoked", {
-          currentSecretPresent: Boolean(currentSecret),
-          workflowId: WORKFLOW_ID,
-          endpoint: CREATE_SESSION_ENDPOINT,
-        });
-      }
+      console.info("[ChatKitPanel] getClientSecret invoked", {
+        currentSecretPresent: Boolean(currentSecret),
+        workflowId: WORKFLOW_ID,
+        endpoint: CREATE_SESSION_ENDPOINT,
+        isProduction: process.env.NODE_ENV === "production"
+      });
 
       if (!isWorkflowConfigured) {
         const detail =
@@ -179,6 +178,7 @@ export function ChatKitPanel({
       if (isMountedRef.current) {
         if (!currentSecret) {
           setIsInitializingSession(true);
+          console.info("[ChatKitPanel] Setting isInitializingSession to true");
         }
         setErrorState({ session: null, integration: null, retryable: false });
       }
@@ -196,13 +196,11 @@ export function ChatKitPanel({
 
         const raw = await response.text();
 
-        if (isDev) {
-          console.info("[ChatKitPanel] createSession response", {
-            status: response.status,
-            ok: response.ok,
-            bodyPreview: raw.slice(0, 1600),
-          });
-        }
+        console.info("[ChatKitPanel] createSession response", {
+          status: response.status,
+          ok: response.ok,
+          bodyLength: raw.length,
+        });
 
         let data: Record<string, unknown> = {};
         if (raw) {
@@ -234,6 +232,7 @@ export function ChatKitPanel({
           setErrorState({ session: null, integration: null });
         }
 
+        console.info("[ChatKitPanel] Session created successfully, returning client secret");
         return clientSecret;
       } catch (error) {
         console.error("Failed to create ChatKit session", error);
@@ -246,8 +245,14 @@ export function ChatKitPanel({
         }
         throw error instanceof Error ? error : new Error(detail);
       } finally {
+        console.info("[ChatKitPanel] getClientSecret finally block", {
+          isMounted: isMountedRef.current,
+          currentSecret,
+          willSetInitFalse: isMountedRef.current && !currentSecret
+        });
         if (isMountedRef.current && !currentSecret) {
           setIsInitializingSession(false);
+          console.info("[ChatKitPanel] Set isInitializingSession to false");
         }
       }
     },
@@ -348,7 +353,7 @@ export function ChatKitPanel({
       {/* Persistent production debug info */}
       {process.env.NODE_ENV === "production" && (
         <div className="absolute top-0 left-0 right-0 z-[100] bg-yellow-100 p-2 text-xs border-b border-yellow-300">
-          <strong>Debug:</strong> init={String(isInitializingSession)} | err={blockingError || "none"} | ctrl={String(Boolean(chatkit.control))} | script={scriptStatus} | wf={WORKFLOW_ID ? "✓" : "✗"}
+          <strong>Debug:</strong> init={String(isInitializingSession)} | err={blockingError || "none"} | ctrl={String(Boolean(chatkit.control))} | script={scriptStatus} | wf={WORKFLOW_ID ? "✓" : "✗"} | opacity={blockingError || isInitializingSession ? "0" : "100"}
         </div>
       )}
       <ChatKit
