@@ -1,8 +1,5 @@
 export async function GET() {
-  // Only show this in development or for debugging
-  if (process.env.NODE_ENV === 'production') {
-    return new Response('Debug endpoint not available in production', { status: 404 });
-  }
+  // Allow debugging in production for troubleshooting
 
   const envStatus = {
     hasOpenaiApiKey: !!process.env.OPENAI_API_KEY,
