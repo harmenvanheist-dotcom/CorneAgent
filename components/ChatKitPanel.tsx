@@ -178,7 +178,16 @@ export function ChatKitPanel({
 
       // If we have a cached secret in-memory that hasn't expired, return it immediately
       if (!currentSecret && cachedSecretRef.current && Date.now() < secretExpiresRef.current) {
-        console.info("[ChatKitPanel] ✅ Returning cached secret (valid for another", Math.floor((secretExpiresRef.current - Date.now()) / 1000), "seconds)");
+        console.info(
+          "[ChatKitPanel] ✅ Returning cached secret (valid for another",
+          Math.floor((secretExpiresRef.current - Date.now()) / 1000),
+          "seconds)"
+        );
+        if (isMountedRef.current) {
+          isInitializingRef.current = false;
+          setIsInitializingSession(false);
+          setErrorState({ session: null, integration: null });
+        }
         return cachedSecretRef.current;
       }
 
@@ -190,7 +199,16 @@ export function ChatKitPanel({
           if (lsSecret && Number.isFinite(lsExpires) && Date.now() < lsExpires) {
             cachedSecretRef.current = lsSecret;
             secretExpiresRef.current = lsExpires;
-            console.info("[ChatKitPanel] ✅ Returning localStorage cached secret (valid for", Math.floor((lsExpires - Date.now()) / 1000), "seconds)");
+            console.info(
+              "[ChatKitPanel] ✅ Returning localStorage cached secret (valid for",
+              Math.floor((lsExpires - Date.now()) / 1000),
+              "seconds)"
+            );
+            if (isMountedRef.current) {
+              isInitializingRef.current = false;
+              setIsInitializingSession(false);
+              setErrorState({ session: null, integration: null });
+            }
             return lsSecret;
           }
         } catch (e) {
