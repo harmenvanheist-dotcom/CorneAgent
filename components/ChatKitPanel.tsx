@@ -54,6 +54,8 @@ export function ChatKitPanel({
   const isMountedRef = useRef(true);
   const isInitializingRef = useRef(false); // Track if initialization is in progress
   const lastSessionCreatedRef = useRef<number>(0); // Track last session creation time
+  const cachedSecretRef = useRef<string | null>(null); // Cache the client secret
+  const secretExpiresRef = useRef<number>(0); // Track when secret expires
   const [scriptStatus, setScriptStatus] = useState<
     "pending" | "ready" | "error"
   >(() =>
@@ -150,6 +152,8 @@ export function ChatKitPanel({
     processedFacts.current.clear();
     isInitializingRef.current = false; // Reset initialization flag on reset
     lastSessionCreatedRef.current = 0; // Reset cooldown timer
+    cachedSecretRef.current = null; // Clear cached secret
+    secretExpiresRef.current = 0; // Clear expiration
     if (isBrowser) {
       setScriptStatus(
         window.customElements?.get("openai-chatkit") ? "ready" : "pending"
@@ -167,8 +171,16 @@ export function ChatKitPanel({
         workflowId: WORKFLOW_ID,
         endpoint: CREATE_SESSION_ENDPOINT,
         isProduction: process.env.NODE_ENV === "production",
-        isCurrentlyInitializing: isInitializingRef.current
+        isCurrentlyInitializing: isInitializingRef.current,
+        hasCachedSecret: !!cachedSecretRef.current,
+        secretExpired: Date.now() > secretExpiresRef.current
       });
+
+      // If we have a cached secret that hasn't expired, return it immediately
+      if (!currentSecret && cachedSecretRef.current && Date.now() < secretExpiresRef.current) {
+        console.info("[ChatKitPanel] ✅ Returning cached secret (valid for another", Math.floor((secretExpiresRef.current - Date.now()) / 1000), "seconds)");
+        return cachedSecretRef.current;
+      }
 
       if (!isWorkflowConfigured) {
         const detail =
@@ -270,11 +282,20 @@ export function ChatKitPanel({
           throw new Error("Missing client secret in response");
         }
 
+        // Cache the secret with expiration (use expires_at from response, or default to 5 minutes)
+        const expiresAt = data?.expires_at as number | undefined;
+        if (expiresAt) {
+          secretExpiresRef.current = expiresAt * 1000; // Convert to milliseconds
+        } else {
+          secretExpiresRef.current = Date.now() + (5 * 60 * 1000); // 5 minutes default
+        }
+        cachedSecretRef.current = clientSecret;
+
         if (isMountedRef.current) {
           setErrorState({ session: null, integration: null });
         }
 
-        console.info("[ChatKitPanel] Session created successfully, returning client secret");
+        console.info("[ChatKitPanel] Session created successfully, cached secret expires in", Math.floor((secretExpiresRef.current - Date.now()) / 1000), "seconds");
         return clientSecret;
       } catch (error) {
         console.error("Failed to create ChatKit session", error);
