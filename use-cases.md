@@ -80,3 +80,14 @@ Complicating matters:
 **Assumptions you may take:** adequate budget for test/retooling; IT has freedom on tech stack; Legal can fast-track license riders; Narmada’s leadership will back your recommended path if justified by cost, timing, and compliance.
 
 Deliver the document in a structure suitable for executive review **and** technical execution (clear headings, logical flow, crisp tables/checklists).
+████████████████████████████████████████████████████
+---
+Company: professaionlImaging
+CEO: Piper Baumer
+File_NAME: TEstingVDB
+---
+Company: DeepSpring
+CEO: Hossein Akh
+File_NAME: TEstingVDB
+ID: qwer1233
+---

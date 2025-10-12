@@ -281,3 +281,4 @@ In production, consider using a proper logging service instead of console.log.
 | Console logging        | ✅ Detailed debugging info                 |
 | Production ready       | ⚠️ Requires additional hardening          |
 
+

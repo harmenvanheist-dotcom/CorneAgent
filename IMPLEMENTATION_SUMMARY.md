@@ -366,3 +366,4 @@ The ChatKit Starter App now supports file uploads while maintaining full Agent B
 
 For questions or issues, refer to the documentation files or check the console logs for detailed error messages.
 
+

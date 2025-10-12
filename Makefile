@@ -9,7 +9,7 @@ NC := \033[0m # No Color
 
 # Configuration
 APP_NAME := OpenAI ChatKit App
-PORT := 3000
+PORT ?= $(shell grep -E '^PORT=' .env 2>/dev/null | cut -d '=' -f2 || echo 3001)
 NODE := node
 NPM := npm
 PID_FILE := .chatkit.pid
