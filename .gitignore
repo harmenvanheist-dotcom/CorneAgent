@@ -24,6 +24,10 @@
 .DS_Store
 *.pem
 
+# ssl certificates
+localhost.key
+localhost.crt
+
 # debug
 npm-debug.log*
 yarn-debug.log*
@@ -36,7 +40,9 @@ yarn-error.log*
 
 # vercel
 .vercel
+.chatkit.pid
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+chatkit.log

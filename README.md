@@ -48,7 +48,24 @@ Update `.env.local` with the variables that match your setup.
 npm run dev
 ```
 
-Visit `http://localhost:3000` and start chatting. Use the prompts on the start screen to verify your workflow connection, then customize the UI or prompt list in [`lib/config.ts`](lib/config.ts) and [`components/ChatKitPanel.tsx`](components/ChatKitPanel.tsx).
+Visit `https://localhost:3000` and start chatting. The app runs with HTTPS by default to ensure `crypto.randomUUID()` and other secure APIs work correctly.
+
+**Note:** You'll see a browser warning about the self-signed certificate. This is normal for local development - just click "Advanced" and "Proceed" to continue.
+
+**Accessing from other devices on your network:**
+- Find your machine's IP address (e.g., `10.18.2.36`)
+- Visit `https://YOUR_IP:3000` from another device
+- Accept the certificate warning
+- The app will work correctly with all secure APIs
+
+**HTTP fallback (not recommended):**
+If you need to run without HTTPS, use:
+```bash
+npm run dev:http
+```
+Note: This may cause errors with ChatKit's secure APIs when accessed from non-localhost addresses.
+
+Use the prompts on the start screen to verify your workflow connection, then customize the UI or prompt list in [`lib/config.ts`](lib/config.ts) and [`components/ChatKitPanel.tsx`](components/ChatKitPanel.tsx).
 
 ### 5. Deploy your app
 
