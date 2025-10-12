@@ -1,0 +1,1 @@
+This is a small test file for ChatKit upload testing. Size: < 512 KB
