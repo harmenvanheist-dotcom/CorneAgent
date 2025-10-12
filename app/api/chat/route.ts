@@ -18,13 +18,13 @@ export async function POST(req: NextRequest) {
     const file = formData.get("file") as File | null;
 
     // Prepare the input for the workflow
-    const input: Record<string, any> = { prompt };
+    const input: Record<string, unknown> = { prompt };
 
     // If a file is attached, upload it to OpenAI Files API
     if (file) {
       console.log(`Uploading file: ${file.name}`);
       const fileUpload = await client.files.create({
-        file: file as any, // Node streams are handled automatically by OpenAI SDK
+        file: file as File, // Node streams are handled automatically by OpenAI SDK
         purpose: "assistants",
       });
 
@@ -98,10 +98,11 @@ export async function POST(req: NextRequest) {
     const output = runResult.output?.output_text ?? runResult.output_text ?? JSON.stringify(runResult.output, null, 2);
     return NextResponse.json({ text: output });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error in /api/chat:", error);
+    const message = error instanceof Error ? error.message : "Internal Server Error";
     return NextResponse.json(
-      { error: error.message ?? "Internal Server Error" },
+      { error: message },
       { status: 500 }
     );
   }
