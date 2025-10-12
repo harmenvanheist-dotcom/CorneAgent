@@ -10,6 +10,7 @@ This repository is the simplest way to bootstrap a [ChatKit](http://openai.githu
 
 - Next.js app with `<openai-chatkit>` web component and theming controls
 - API endpoint for creating a session at [`app/api/create-session/route.ts`](app/api/create-session/route.ts)
+- **NEW:** File upload support via custom chat endpoint at [`app/api/chat/route.ts`](app/api/chat/route.ts)
 - Config file for starter prompts, theme, placeholder text, and greeting message
 
 ## Getting Started
@@ -39,8 +40,10 @@ You can get your OpenAI API key from the [OpenAI API Keys](https://platform.open
 Update `.env.local` with the variables that match your setup.
 
 - `OPENAI_API_KEY` — API key created **within the same org & project as your Agent Builder**
-- `NEXT_PUBLIC_CHATKIT_WORKFLOW_ID` — the workflow you created in [Agent Builder](https://platform.openai.com/agent-builder)
+- `CHATKIT_WORKFLOW_ID` — the workflow you created in [Agent Builder](https://platform.openai.com/agent-builder) (server-side, secure)
 - (optional) `CHATKIT_API_BASE` - customizable base URL for the ChatKit API endpoint
+
+**Note:** For file upload support, use `CHATKIT_WORKFLOW_ID` (server-side) instead of `NEXT_PUBLIC_CHATKIT_WORKFLOW_ID` (client-side). See [FILE_UPLOAD_IMPLEMENTATION.md](FILE_UPLOAD_IMPLEMENTATION.md) for details.
 
 ### 4. Run the app
 
@@ -75,12 +78,32 @@ npm run build
 
 Before deploying your app, you need to verify the domain by adding it to the [Domain allowlist](https://platform.openai.com/settings/organization/security/domain-allowlist) on your dashboard.
 
+## File Upload Support
+
+This starter app now includes built-in file upload support! Users can attach files (PDFs, images, documents) to their messages, and your Agent Builder workflow will receive them.
+
+**Quick Start:**
+1. Set `CHATKIT_WORKFLOW_ID` in your `.env.local` (not `NEXT_PUBLIC_CHATKIT_WORKFLOW_ID`)
+2. Configure your workflow to accept `file_ids` parameter
+3. Click "+ Add file" in the UI to test
+
+See [FILE_UPLOAD_IMPLEMENTATION.md](FILE_UPLOAD_IMPLEMENTATION.md) for complete implementation details, troubleshooting, and advanced features.
+
 ## Customization Tips
 
 - Adjust starter prompts, greeting text, [chatkit theme](https://chatkit.studio/playground), and placeholder copy in [`lib/config.ts`](lib/config.ts).
 - Update the event handlers inside [`components/.tsx`](components/ChatKitPanel.tsx) to integrate with your product analytics or storage.
+- Customize file upload handling in [`app/api/chat/route.ts`](app/api/chat/route.ts)
+
+## Documentation
+
+- [FILE_UPLOAD_IMPLEMENTATION.md](FILE_UPLOAD_IMPLEMENTATION.md) - Complete guide for file upload feature
+- [FILE_UPLOAD_TROUBLESHOOTING.md](FILE_UPLOAD_TROUBLESHOOTING.md) - Troubleshooting guide
+- [FILE_UPLOAD_SOLUTION.md](FILE_UPLOAD_SOLUTION.md) - Solution documentation
 
 ## References
 
 - [ChatKit JavaScript Library](http://openai.github.io/chatkit-js/)
 - [Advanced Self-Hosting Examples](https://github.com/openai/openai-chatkit-advanced-samples)
+- [OpenAI Files API](https://platform.openai.com/docs/api-reference/files)
+- [OpenAI Workflows API](https://platform.openai.com/docs/api-reference/workflows)

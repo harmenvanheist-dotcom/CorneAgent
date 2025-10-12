@@ -34,43 +34,59 @@ install: ## Install dependencies
 
 env-check: ## Check environment configuration
 	@echo "$(BLUE)Checking environment...$(NC)"
-	@if [ ! -f .env ]; then \
-		echo "$(RED)✗ .env file not found!$(NC)"; \
+	@ENV_FILE=""; \
+	if [ -f .env.local ]; then \
+		ENV_FILE=".env.local"; \
+	elif [ -f .env ]; then \
+		ENV_FILE=".env"; \
+	else \
+		echo "$(RED)✗ No .env or .env.local file found!$(NC)"; \
 		echo "$(YELLOW)Run 'make env-setup' to create it$(NC)"; \
 		exit 1; \
-	fi
-	@if ! grep -q "OPENAI_API_KEY=sk-" .env; then \
-		echo "$(RED)✗ OPENAI_API_KEY not configured in .env$(NC)"; \
+	fi; \
+	echo "$(BLUE)Using $$ENV_FILE$(NC)"; \
+	if ! grep -q "OPENAI_API_KEY=sk-" $$ENV_FILE; then \
+		echo "$(RED)✗ OPENAI_API_KEY not configured in $$ENV_FILE$(NC)"; \
 		exit 1; \
-	fi
-	@if ! grep -q "NEXT_PUBLIC_CHATKIT_WORKFLOW_ID=wf_" .env; then \
-		echo "$(RED)✗ NEXT_PUBLIC_CHATKIT_WORKFLOW_ID not configured in .env$(NC)"; \
+	fi; \
+	if ! grep -q "CHATKIT_WORKFLOW_ID=wf_" $$ENV_FILE && ! grep -q "NEXT_PUBLIC_CHATKIT_WORKFLOW_ID=wf_" $$ENV_FILE; then \
+		echo "$(RED)✗ CHATKIT_WORKFLOW_ID (or NEXT_PUBLIC_CHATKIT_WORKFLOW_ID) not configured in $$ENV_FILE$(NC)"; \
 		exit 1; \
+	fi; \
+	echo "$(GREEN)✓ Environment configured$(NC)"; \
+	echo "$(GREEN)✓ API Key: $$(grep OPENAI_API_KEY $$ENV_FILE | cut -d= -f2 | cut -c1-20)...$(NC)"; \
+	if grep -q "CHATKIT_WORKFLOW_ID=wf_" $$ENV_FILE; then \
+		echo "$(GREEN)✓ Workflow: $$(grep CHATKIT_WORKFLOW_ID $$ENV_FILE | cut -d= -f2) (server-side)$(NC)"; \
+	else \
+		echo "$(GREEN)✓ Workflow: $$(grep NEXT_PUBLIC_CHATKIT_WORKFLOW_ID $$ENV_FILE | cut -d= -f2) (client-side)$(NC)"; \
 	fi
-	@echo "$(GREEN)✓ Environment configured$(NC)"
-	@echo "$(GREEN)✓ API Key: $$(grep OPENAI_API_KEY .env | cut -d= -f2 | cut -c1-20)...$(NC)"
-	@echo "$(GREEN)✓ Workflow: $$(grep NEXT_PUBLIC_CHATKIT_WORKFLOW_ID .env | cut -d= -f2)$(NC)"
 
-env-setup: ## Create .env file from example
-	@if [ -f .env ]; then \
-		echo "$(YELLOW)⚠ .env already exists$(NC)"; \
+env-setup: ## Create .env.local file from example
+	@if [ -f .env.local ]; then \
+		echo "$(YELLOW)⚠ .env.local already exists$(NC)"; \
 		read -p "Overwrite? (y/N) " -n 1 -r; \
 		echo ""; \
 		if [[ ! $$REPLY =~ ^[Yy]$$ ]]; then \
-			echo "$(BLUE)Keeping existing .env$(NC)"; \
+			echo "$(BLUE)Keeping existing .env.local$(NC)"; \
 			exit 0; \
 		fi; \
 	fi
 	@if [ -f .env.example ]; then \
-		cp .env.example .env; \
-		echo "$(GREEN)✓ Created .env from .env.example$(NC)"; \
+		cp .env.example .env.local; \
+		echo "$(GREEN)✓ Created .env.local from .env.example$(NC)"; \
 	else \
-		echo "$(BLUE)Creating default .env...$(NC)"; \
-		echo "OPENAI_API_KEY=sk-YOUR_API_KEY_HERE" > .env; \
-		echo "NEXT_PUBLIC_CHATKIT_WORKFLOW_ID=wf_YOUR_WORKFLOW_ID_HERE" >> .env; \
-		echo "$(GREEN)✓ Created .env$(NC)"; \
+		echo "$(BLUE)Creating default .env.local...$(NC)"; \
+		echo "# OpenAI API Key" > .env.local; \
+		echo "OPENAI_API_KEY=sk-YOUR_API_KEY_HERE" >> .env.local; \
+		echo "" >> .env.local; \
+		echo "# Workflow ID (server-side, for file upload support)" >> .env.local; \
+		echo "CHATKIT_WORKFLOW_ID=wf_YOUR_WORKFLOW_ID_HERE" >> .env.local; \
+		echo "" >> .env.local; \
+		echo "# Legacy (optional, for backward compatibility)" >> .env.local; \
+		echo "# NEXT_PUBLIC_CHATKIT_WORKFLOW_ID=wf_YOUR_WORKFLOW_ID_HERE" >> .env.local; \
+		echo "$(GREEN)✓ Created .env.local$(NC)"; \
 	fi
-	@echo "$(YELLOW)⚠ Please edit .env with your credentials$(NC)"
+	@echo "$(YELLOW)⚠ Please edit .env.local with your credentials$(NC)"
 
 ##@ Development
 
@@ -211,11 +227,22 @@ info: ## Display app information
 	@echo "  PID file:    $(PID_FILE)"
 	@echo ""
 	@echo "$(GREEN)Environment:$(NC)"
-	@if [ -f .env ]; then \
-		echo "  API Key:     $$(grep OPENAI_API_KEY .env | cut -d= -f2 | cut -c1-20)..."; \
-		echo "  Workflow:    $$(grep NEXT_PUBLIC_CHATKIT_WORKFLOW_ID .env | cut -d= -f2)"; \
+	@ENV_FILE=""; \
+	if [ -f .env.local ]; then \
+		ENV_FILE=".env.local"; \
+	elif [ -f .env ]; then \
+		ENV_FILE=".env"; \
+	fi; \
+	if [ -n "$$ENV_FILE" ]; then \
+		echo "  Config file: $$ENV_FILE"; \
+		echo "  API Key:     $$(grep OPENAI_API_KEY $$ENV_FILE | cut -d= -f2 | cut -c1-20)..."; \
+		if grep -q "CHATKIT_WORKFLOW_ID=wf_" $$ENV_FILE; then \
+			echo "  Workflow:    $$(grep CHATKIT_WORKFLOW_ID $$ENV_FILE | cut -d= -f2) (server-side)"; \
+		elif grep -q "NEXT_PUBLIC_CHATKIT_WORKFLOW_ID=wf_" $$ENV_FILE; then \
+			echo "  Workflow:    $$(grep NEXT_PUBLIC_CHATKIT_WORKFLOW_ID $$ENV_FILE | cut -d= -f2) (client-side)"; \
+		fi; \
 	else \
-		echo "  $(RED)No .env file found$(NC)"; \
+		echo "  $(RED)No .env or .env.local file found$(NC)"; \
 	fi
 	@echo ""
 	@echo "$(GREEN)Status:$(NC)"
@@ -235,7 +262,7 @@ first-run: install env-setup ## Complete first-time setup
 	@echo "$(BLUE)════════════════════════════════════════════════════════════$(NC)"
 	@echo ""
 	@echo "$(YELLOW)Next steps:$(NC)"
-	@echo "  1. Edit .env with your OpenAI API key and workflow ID"
+	@echo "  1. Edit .env.local with your OpenAI API key and workflow ID"
 	@echo "  2. Run: make start"
 	@echo "  3. Open: https://localhost:$(PORT)"
 	@echo ""
