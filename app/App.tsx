@@ -47,17 +47,25 @@ export default function App() {
             />
           </section>
 
-          <footer className="pb-6 text-sm text-slate-600 dark:text-slate-400">
-            <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
-              Over de assistent
-            </h2>
-            <p className="mt-1 max-w-2xl">
-              Corne helpt klanten van Trappenfabriek Vermeulen met vragen over
-              onderhoud, inspectie en herstellingen. Het advies is informatief
-              en kan afwijkingen bevatten; controleer altijd zelf of het past
-              bij jouw situatie.
-            </p>
-          </footer>
+         <footer className="pb-6 text-sm text-slate-600 dark:text-slate-400">
+  <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+    Over de assistent
+  </h2>
+  <p className="mt-1 max-w-2xl">
+    Corne helpt klanten van Trappenfabriek Vermeulen met vragen over
+    onderhoud, inspectie en herstellingen. Het advies is informatief
+    en kan afwijkingen bevatten; controleer altijd zelf of het past
+    bij jouw situatie. Deze assistent is gebouwd door{' '}
+    <a 
+      href="https://www.morgenacademy.nl" 
+      target="_blank" 
+      rel="noopener noreferrer"
+      className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 underline"
+    >
+      Morgen Academy
+    </a>.
+  </p>
+</footer>
         </div>
       </div>
     </main>
