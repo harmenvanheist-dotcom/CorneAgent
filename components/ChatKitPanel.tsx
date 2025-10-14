@@ -346,7 +346,7 @@ export function ChatKitPanel({
   }
 
   return (
-    <div className="relative pb-8 flex h-[90vh] w-full rounded-2xl flex-col overflow-hidden bg-white shadow-sm transition-colors dark:bg-slate-900">
+    <div className="relative pb-6 flex h-[72vh] w-full rounded-2xl flex-col overflow-hidden bg-white shadow-sm transition-colors dark:bg-slate-900 sm:h-[75vh] md:h-[78vh] lg:h-[80vh]">
       <ChatKit
         key={widgetInstanceKey}
         control={chatkit.control}

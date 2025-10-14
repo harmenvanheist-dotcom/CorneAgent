@@ -14,7 +14,7 @@ export const CREATE_SESSION_ENDPOINT = "/api/create-session";
 
 export const STARTER_PROMPTS: StartScreenPrompt[] = [
   {
-    label: "Trap onderhouden",
+    label: "Houten trap onderhouden",
     prompt:
       "Welke stappen moet ik volgen om mijn houten trap grondig te onderhouden?",
   },

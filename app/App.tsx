@@ -22,13 +22,13 @@ export default function App() {
   return (
     <main className="flex min-h-screen flex-col bg-[#f7f3ef] text-slate-900 transition-colors dark:bg-slate-950 dark:text-slate-100">
       <div className="relative flex flex-1 flex-col">
-        <div className="absolute inset-x-0 top-0 -z-10 h-60 bg-gradient-to-b from-[#ffefe2]/70 to-transparent dark:from-slate-900/90" />
-        <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-10 sm:px-8 lg:px-12">
-          <header className="flex flex-col gap-4">
+        <div className="absolute inset-x-0 top-0 -z-10 h-44 bg-gradient-to-b from-[#ffefe2]/70 to-transparent dark:from-slate-900/90" />
+        <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-6 px-4 py-8 sm:px-8 lg:px-10">
+          <header className="flex flex-col gap-3">
             <span className="text-sm font-semibold uppercase tracking-[0.2em] text-[#DA6A2F]">
               Vermeulen Trappen
             </span>
-            <h1 className="text-4xl font-semibold sm:text-5xl">
+            <h1 className="text-3xl font-semibold sm:text-4xl">
               Onderhoudsassistent Trappenfabriek Vermeulen
             </h1>
             <p className="max-w-2xl text-base text-slate-600 dark:text-slate-300">
@@ -47,30 +47,16 @@ export default function App() {
             />
           </section>
 
-          <footer className="grid gap-4 pb-6 text-sm text-slate-600 dark:text-slate-400 sm:grid-cols-2">
-            <div>
-              <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                Over de assistent
-              </h2>
-              <p className="mt-1">
-                Corne helpt klanten van Trappenfabriek Vermeulen met vragen over
-                onderhoud, inspectie en herstellingen. Het advies is informatief
-                en kan afwijkingen bevatten; controleer altijd zelf of het
-                past bij jouw situatie.
-              </p>
-            </div>
-            <div>
-              <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                Thema aanpassen
-              </h2>
-              <p className="mt-1">
-                Typ bijvoorbeeld:{" "}
-                <span className="rounded-full bg-white/60 px-2 py-0.5 font-medium text-slate-700 shadow-sm dark:bg-slate-800 dark:text-slate-200">
-                  Zet het thema op donker
-                </span>{" "}
-                om te wisselen tussen licht en donker.
-              </p>
-            </div>
+          <footer className="pb-6 text-sm text-slate-600 dark:text-slate-400">
+            <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+              Over de assistent
+            </h2>
+            <p className="mt-1 max-w-2xl">
+              Corne helpt klanten van Trappenfabriek Vermeulen met vragen over
+              onderhoud, inspectie en herstellingen. Het advies is informatief
+              en kan afwijkingen bevatten; controleer altijd zelf of het past
+              bij jouw situatie.
+            </p>
           </footer>
         </div>
       </div>
