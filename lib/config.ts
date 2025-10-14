@@ -28,7 +28,7 @@ export const STARTER_PROMPTS: StartScreenPrompt[] = [
 export const PLACEHOLDER_INPUT = "Stel hier je onderhoudsvraag.";
 
 export const GREETING =
-  "Onderhoudsassistent Trappenfabriek Vermeulen.\nIk ben Corne, waarmee kan ik helpen?";
+  "Onderhoudsassistent Trappenfabriek Vermeulen.\u2028Ik ben Corne, waarmee kan ik helpen?";
 
 const FONT_SOURCES: NonNullable<ThemeOption["typography"]>["fontSources"] = [
   {
