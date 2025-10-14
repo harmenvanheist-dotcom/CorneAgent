@@ -138,7 +138,8 @@ export function ChatKitPanel({
   useEffect(() => {
     if (!isWorkflowConfigured && isMountedRef.current) {
       setErrorState({
-        session: "Set NEXT_PUBLIC_CHATKIT_WORKFLOW_ID in your .env.local file.",
+        session:
+          "Stel NEXT_PUBLIC_CHATKIT_WORKFLOW_ID in via je omgevingsvariabelen.",
         retryable: false,
       });
       setIsInitializingSession(false);
@@ -169,7 +170,7 @@ export function ChatKitPanel({
 
       if (!isWorkflowConfigured) {
         const detail =
-          "Set NEXT_PUBLIC_CHATKIT_WORKFLOW_ID in your .env.local file.";
+          "Stel NEXT_PUBLIC_CHATKIT_WORKFLOW_ID in via je omgevingsvariabelen.";
         if (isMountedRef.current) {
           setErrorState({ session: detail, retryable: false });
           setIsInitializingSession(false);
@@ -267,6 +268,7 @@ export function ChatKitPanel({
       colorScheme: theme,
       ...getThemeConfig(theme),
     },
+    locale: "nl-NL",
     startScreen: {
       greeting: GREETING,
       prompts: STARTER_PROMPTS,
@@ -359,10 +361,10 @@ export function ChatKitPanel({
         fallbackMessage={
           blockingError || !isInitializingSession
             ? null
-            : "Loading assistant session..."
+            : "Assistent wordt geladen..."
         }
         onRetry={blockingError && errors.retryable ? handleResetChat : null}
-        retryLabel="Restart chat"
+        retryLabel="Start het gesprek opnieuw"
       />
     </div>
   );
