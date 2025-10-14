@@ -30,6 +30,8 @@ export default function App() {
             </span>
             <h1 className="text-3xl font-semibold sm:text-4xl">
               Onderhoudsassistent Trappenfabriek Vermeulen
+              <br />
+              Ik ben Corne, waarme kan ik helpen?
             </h1>
             <p className="max-w-2xl text-base text-slate-600 dark:text-slate-300">
               Ontvang direct onderhoudsadvies en tips op maat voor jouw
