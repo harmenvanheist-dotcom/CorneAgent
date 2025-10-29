@@ -57,7 +57,7 @@ export default function App() {
     en kan afwijkingen bevatten; controleer altijd zelf of het past
     bij jouw situatie. Deze assistent is gebouwd door{' '}
     <a 
-      href="https://www.morgenacademy.nl" 
+      href="https://assistentenvanmorgen.nl" 
       target="_blank" 
       rel="noopener noreferrer"
       className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 underline"
